@@ -1,6 +1,5 @@
 package edu.mdc.entec.north.arttracker;
 
-
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,12 +21,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.mdc.entec.north.arttracker.db.AppDatabase;
+
 
 public class GalleryFragment extends Fragment
         implements ArtPieceListFragment.OnArtPieceSelectedListener
         , GetNameDialogFragment.OnGetNameListener{
     private static final String TAG = "GalleryFragment";
     private boolean isLandscape;
+    private AppDatabase mDb;
     private List<ArtPiece> artPieces;
     private boolean showList;
     private int position;
@@ -46,9 +48,11 @@ public class GalleryFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+
+
         //Create and populate data list
-        artPieces = new ArrayList<>();
-        populateListOfArtPieces();
+        mDb = AppDatabase.getInMemoryDatabase(getActivity().getApplicationContext());
+        populateDb();
 
         if(view.findViewById(R.id.container2) != null){
             isLandscape = true;
@@ -115,6 +119,45 @@ public class GalleryFragment extends Fragment
 
     }
 
+    private void populateDb() {
+        mDb.artPieceModel().deleteAll();
+        ArtPiece ap1 = new ArtPiece("Mona Lisa", "Leonardo da Vinci", 1503, R.drawable.monalisa);
+        mDb.artPieceModel().insertArtPiece(ap1);
+        ArtPiece ap2 = new ArtPiece("Guernica", "Pablo Picasso", 1937,R.drawable.guernica);
+        mDb.artPieceModel().insertArtPiece(ap2);
+        ArtPiece ap3 = new ArtPiece("The Creation of Adam", "Michelangelo", 1508, R.drawable.thecreationofadam);
+        mDb.artPieceModel().insertArtPiece(ap3);
+        ArtPiece ap4 = new ArtPiece("The Birth of Venice", "Sandro Botticelli", 1486, R.drawable.thebirthofvenice);
+        mDb.artPieceModel().insertArtPiece(ap4);
+        ArtPiece ap5 = new ArtPiece("Girl with a Pearl Earring", "Johannes Vermeer", 1665,R.drawable.girlwithapearlearring);
+        mDb.artPieceModel().insertArtPiece(ap5);
+        ArtPiece ap6 = new ArtPiece("Campbell's Soup Cans", "Andy Warhol", 1962, R.drawable.campbellssoupcans);
+        mDb.artPieceModel().insertArtPiece(ap6);
+        ArtPiece ap7 = new ArtPiece("The Thinker", "Auguste Rodin", 1902, R.drawable.thethinker);
+        mDb.artPieceModel().insertArtPiece(ap7);
+        ArtPiece ap8 = new ArtPiece("No 1", "Jackson Pollock", 1950, R.drawable.no1);
+        mDb.artPieceModel().insertArtPiece(ap8);
+        ArtPiece ap9 = new ArtPiece("Starry Night", "Vincent Van Gogh", 1889, R.drawable.starrynight);
+        mDb.artPieceModel().insertArtPiece(ap9);
+        ArtPiece ap10 = new ArtPiece("American Gothic", "Grant Wood", 1930, R.drawable.americangothic);
+        mDb.artPieceModel().insertArtPiece(ap10);
+        ArtPiece ap11 = new ArtPiece("Water Lily Pond", "Claude Monet", 1899, R.drawable.waterlilypond);
+        mDb.artPieceModel().insertArtPiece(ap11);
+        ArtPiece ap12 = new ArtPiece("The Scream", "Edvard Munch", 1893, R.drawable.thescream);
+        mDb.artPieceModel().insertArtPiece(ap12);
+        ArtPiece ap13 = new ArtPiece("The Persistence of Memory", "Salvador Dali", 1931, R.drawable.thepersistenceofmemory);
+        mDb.artPieceModel().insertArtPiece(ap13);
+        ArtPiece ap14 = new ArtPiece("Dance at Le Moulin de la Galette", "Edward Renoir", 1876,R.drawable.danceatlemoulindelagalette);
+        mDb.artPieceModel().insertArtPiece(ap14);
+
+
+        StringBuilder sb = new StringBuilder();
+        artPieces = mDb.artPieceModel().findAllArtPiecesSync();
+
+
+
+    }
+
     private void sayHello(String userName) {
         FileInputStream fin = null;
         StringBuilder temp = new StringBuilder();
@@ -134,37 +177,6 @@ public class GalleryFragment extends Fragment
         Toast toast = Toast.makeText(getContext(), "Hello " + userName + "! Your password is " + temp.toString(), Toast.LENGTH_LONG);
         toast.setGravity(Gravity.TOP, 10, 10);
         toast.show();
-    }
-
-    private void populateListOfArtPieces() {
-        ArtPiece ap1 = new ArtPiece("Mona Lisa", "Leonardo da Vinci", 1503, R.drawable.monalisa);
-        artPieces.add(ap1);
-        ArtPiece ap2 = new ArtPiece("Guernica", "Pablo Picasso", 1937,R.drawable.guernica);
-        artPieces.add(ap2);
-        ArtPiece ap3 = new ArtPiece("The Creation of Adam", "Michelangelo", 1508, R.drawable.thecreationofadam);
-        artPieces.add(ap3);
-        ArtPiece ap4 = new ArtPiece("The Birth of Venice", "Sandro Botticelli", 1486, R.drawable.thebirthofvenice);
-        artPieces.add(ap4);
-        ArtPiece ap5 = new ArtPiece("Girl with a Pearl Earring", "Johannes Vermeer", 1665,R.drawable.girlwithapearlearring);
-        artPieces.add(ap5);
-        ArtPiece ap6 = new ArtPiece("Campbell's Soup Cans", "Andy Warhol", 1962, R.drawable.campbellssoupcans);
-        artPieces.add(ap6);
-        ArtPiece ap7 = new ArtPiece("The Thinker", "Auguste Rodin", 1902, R.drawable.thethinker);
-        artPieces.add(ap7);
-        ArtPiece ap8 = new ArtPiece("No 1", "Jackson Pollock", 1950, R.drawable.no1);
-        artPieces.add(ap8);
-        ArtPiece ap9 = new ArtPiece("Starry Night", "Vincent Van Gogh", 1889, R.drawable.starrynight);
-        artPieces.add(ap9);
-        ArtPiece ap10 = new ArtPiece("American Gothic", "Grant Wood", 1930, R.drawable.americangothic);
-        artPieces.add(ap10);
-        ArtPiece ap11 = new ArtPiece("Water Lily Pond", "Claude Monet", 1899, R.drawable.waterlilypond);
-        artPieces.add(ap11);
-        ArtPiece ap12 = new ArtPiece("The Scream", "Edvard Munch", 1893, R.drawable.thescream);
-        artPieces.add(ap12);
-        ArtPiece ap13 = new ArtPiece("The Persistence of Memory", "Salvador Dali", 1931, R.drawable.thepersistenceofmemory);
-        artPieces.add(ap13);
-        ArtPiece ap14 = new ArtPiece("Dance at Le Moulin de la Galette", "Edward Renoir", 1876,R.drawable.danceatlemoulindelagalette);
-        artPieces.add(ap14);
     }
 
 

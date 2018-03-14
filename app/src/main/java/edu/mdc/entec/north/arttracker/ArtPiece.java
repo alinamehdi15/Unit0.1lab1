@@ -1,9 +1,15 @@
 package edu.mdc.entec.north.arttracker;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
+@Entity
 public class ArtPiece implements Parcelable {
+    @PrimaryKey
+    @NonNull
     private String name;
     private String artist;
     private int year;
